@@ -12,8 +12,13 @@ const mockUsers: User[] = [
     rating: 4.8,
     reviewCount: 32,
     verified: true,
-    joinedDate: '2023-08-15T00:00:00.000Z',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=aarav'
+    joinedDate: '2025-06-15T00:00:00.000Z',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=aarav',
+    contactPreferences:{
+      email: true,
+      chat: true,
+      phone: "9273625612",
+    }
   },
   {
     id: '2',
@@ -26,8 +31,13 @@ const mockUsers: User[] = [
     rating: 4.9,
     reviewCount: 28,
     verified: true,
-    joinedDate: '2023-07-20T00:00:00.000Z',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=priya'
+    joinedDate: '2025-06-15T00:00:00.000Z',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=priya',
+    contactPreferences:{
+      email: true,
+      chat: true,
+      phone: '111111111',
+    }
   },
   {
     id: '3',
@@ -41,7 +51,12 @@ const mockUsers: User[] = [
     reviewCount: 15,
     verified: true,
     joinedDate: '2023-06-10T00:00:00.000Z',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rohit'
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rohit',
+    contactPreferences:{
+      email: true,
+      chat: true,
+      phone: "9812425252",
+    }
   }
 ];
 
@@ -63,7 +78,8 @@ export const mockProducts: Product[] = [
     datePosted: '2024-01-15T10:30:00.000Z',
     views: 234,
     saves: 45,
-    tags: ['laptop', 'apple', 'macbook', 'programming']
+    tags: ['laptop', 'apple', 'macbook', 'programming'],
+    currency:'INR'
   },
   {
     id: '2',
@@ -82,7 +98,8 @@ export const mockProducts: Product[] = [
     datePosted: '2024-01-14T14:20:00.000Z',
     views: 89,
     saves: 12,
-    tags: ['books', 'dsa', 'programming', 'competitive']
+    tags: ['books', 'dsa', 'programming', 'competitive'],
+    currency:'INR'
   },
   {
     id: '3',
@@ -101,7 +118,8 @@ export const mockProducts: Product[] = [
     datePosted: '2024-01-13T16:45:00.000Z',
     views: 156,
     saves: 23,
-    tags: ['shoes', 'nike', 'sneakers', 'fashion']
+    tags: ['shoes', 'nike', 'sneakers', 'fashion'],
+    currency:'INR'
   },
   {
     id: '4',
@@ -120,7 +138,8 @@ export const mockProducts: Product[] = [
     datePosted: '2024-01-12T12:15:00.000Z',
     views: 198,
     saves: 34,
-    tags: ['gaming', 'monitor', 'keyboard', 'mouse']
+    tags: ['gaming', 'monitor', 'keyboard', 'mouse'],
+    currency:'INR'
   }
 ];
 
@@ -269,7 +288,10 @@ export const mockChats: Chat[] = [
     lastMessage: mockMessages[2],
     unreadCount: 1,
     itemId: '1',
-    itemType: 'product'
+    itemType: 'product',
+    archived:false,
+    createdAt:'15/06/25',
+    updatedAt:'15/05/25'
   },
   {
     id: '2',
@@ -279,12 +301,15 @@ export const mockChats: Chat[] = [
       id: '4',
       senderId: '3',
       content: 'Thanks for the tutoring session!',
-      timestamp: '2024-01-14T16:20:00.000Z',
+      timestamp: '2025-06-15',
       type: 'text',
       read: true
     },
     unreadCount: 0,
     itemId: '2',
-    itemType: 'service'
+    itemType: 'service',
+    archived:false,
+    createdAt:'15/06/25',
+    updatedAt:'15/05/25'
   }
 ];

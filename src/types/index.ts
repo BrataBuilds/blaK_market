@@ -42,13 +42,7 @@ export interface Product {
   sellerId: string;
   seller: User;
   availability: 'available' | 'sold' | 'reserved';
-  location: {
-    address: string;
-    coordinates?: {
-      lat: number;
-      lng: number;
-    };
-  };
+  location?: string;
   datePosted: string;
   views: number;
   saves: number;
@@ -63,7 +57,7 @@ export interface Service {
   title: string;
   description: string;
   price: number;
-  currency: 'INR' | 'USD';
+  currency?: 'INR';
   negotiable: boolean;
   category: ServiceCategory;
   subcategory: string;
@@ -71,13 +65,7 @@ export interface Service {
   providerId: string;
   provider: User;
   availability: 'available' | 'busy' | 'unavailable';
-  location: {
-    address: string;
-    coordinates?: {
-      lat: number;
-      lng: number;
-    };
-  };
+  location: string;
   datePosted: string;
   views: number;
   saves: number;
@@ -92,20 +80,14 @@ export interface Request {
   title: string;
   description: string;
   budget: number;
-  currency: 'INR' | 'USD';
+  currency?: 'INR';
   category: RequestCategory;
   subcategory: string;
   urgency: 'low' | 'medium' | 'high';
   requesterId: string;
   requester: User;
   status: 'open' | 'in-progress' | 'completed' | 'cancelled';
-  location: {
-    address: string;
-    coordinates?: {
-      lat: number;
-      lng: number;
-    };
-  };
+  location: String;
   datePosted: string;
   deadline?: string;
   responses: number;
