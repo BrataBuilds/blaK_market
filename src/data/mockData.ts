@@ -18,7 +18,8 @@ const mockUsers: User[] = [
       email: true,
       chat: true,
       phone: "9273625612",
-    }
+    },
+    lastSeen:'2025-06-15T00:00:00.000Z'
   },
   {
     id: '2',
@@ -37,7 +38,8 @@ const mockUsers: User[] = [
       email: true,
       chat: true,
       phone: '111111111',
-    }
+    },
+    lastSeen:'2025-06-15T00:12:00.000Z'
   },
   {
     id: '3',
@@ -75,7 +77,7 @@ export const mockProducts: Product[] = [
     seller: mockUsers[0],
     availability: 'available',
     location: 'Hostel Block A',
-    datePosted: '2024-01-15T10:30:00.000Z',
+    datePosted: '2025-06-16T10:30:00.000Z',
     views: 234,
     saves: 45,
     tags: ['laptop', 'apple', 'macbook', 'programming'],
@@ -95,7 +97,7 @@ export const mockProducts: Product[] = [
     seller: mockUsers[1],
     availability: 'available',
     location: 'Academic Block',
-    datePosted: '2024-01-14T14:20:00.000Z',
+    datePosted: '2025-06-16T14:20:00.000Z',
     views: 89,
     saves: 12,
     tags: ['books', 'dsa', 'programming', 'competitive'],
@@ -115,7 +117,7 @@ export const mockProducts: Product[] = [
     seller: mockUsers[2],
     availability: 'available',
     location: 'Hostel Block C',
-    datePosted: '2024-01-13T16:45:00.000Z',
+    datePosted: '2025-06-15T16:45:00.000Z',
     views: 156,
     saves: 23,
     tags: ['shoes', 'nike', 'sneakers', 'fashion'],
@@ -135,7 +137,7 @@ export const mockProducts: Product[] = [
     seller: mockUsers[0],
     availability: 'available',
     location: 'Hostel Block B',
-    datePosted: '2024-01-12T12:15:00.000Z',
+    datePosted: '2025-06-17T12:15:00.000Z',
     views: 198,
     saves: 34,
     tags: ['gaming', 'monitor', 'keyboard', 'mouse'],
@@ -157,7 +159,7 @@ export const mockServices: Service[] = [
     provider: mockUsers[0],
     availability: 'available',
     location: 'Online/Campus',
-    datePosted: '2024-01-15T09:00:00.000Z',
+    datePosted: '2025-06-15T09:00:00.000Z',
     views: 167,
     saves: 28,
     tags: ['web development', 'react', 'nodejs', 'programming']
@@ -175,7 +177,7 @@ export const mockServices: Service[] = [
     provider: mockUsers[1],
     availability: 'available',
     location: 'Library/Online',
-    datePosted: '2024-01-14T11:30:00.000Z',
+    datePosted: '2025-01-14T11:30:00.000Z',
     views: 143,
     saves: 19,
     tags: ['tutoring', 'math', 'physics', 'engineering']
@@ -193,7 +195,7 @@ export const mockServices: Service[] = [
     provider: mockUsers[2],
     availability: 'available',
     location: 'Online',
-    datePosted: '2024-01-13T13:45:00.000Z',
+    datePosted: '2025-01-13T13:45:00.000Z',
     views: 201,
     saves: 31,
     tags: ['writing', 'research', 'assignments', 'academic']
@@ -213,8 +215,8 @@ export const mockRequests: Request[] = [
     requester: mockUsers[1],
     status: 'open',
     location: 'Hostel Block A',
-    datePosted: '2024-01-15T18:30:00.000Z',
-    deadline: '2024-01-16T08:00:00.000Z',
+    datePosted: '2025-01-15T18:30:00.000Z',
+    deadline: '2025-01-16T08:00:00.000Z',
     responses: 5,
     tags: ['iphone', 'charger', 'urgent', 'electronics']
   },
@@ -230,7 +232,7 @@ export const mockRequests: Request[] = [
     requester: mockUsers[2],
     status: 'open',
     location: 'Campus',
-    datePosted: '2024-01-14T20:15:00.000Z',
+    datePosted: '2025-01-14T20:15:00.000Z',
     responses: 8,
     tags: ['study group', 'machine learning', 'cse', 'academic']
   },
@@ -246,8 +248,8 @@ export const mockRequests: Request[] = [
     requester: mockUsers[0],
     status: 'open',
     location: 'Online',
-    datePosted: '2024-01-13T15:20:00.000Z',
-    deadline: '2024-01-20T23:59:00.000Z',
+    datePosted: '2025-01-13T15:20:00.000Z',
+    deadline: '2025-01-20T23:59:00.000Z',
     responses: 3,
     tags: ['graphic design', 'poster', 'fest', 'creative']
   }
@@ -258,7 +260,7 @@ const mockMessages: Message[] = [
     id: '1',
     senderId: '2',
     content: 'Hi! Is the MacBook still available?',
-    timestamp: '2024-01-15T14:30:00.000Z',
+    timestamp: '2025-01-15T14:30:00.000Z',
     type: 'text',
     read: true
   },
@@ -266,7 +268,7 @@ const mockMessages: Message[] = [
     id: '2',
     senderId: '1',
     content: 'Yes, it\'s still available! Would you like to see it?',
-    timestamp: '2024-01-15T14:35:00.000Z',
+    timestamp: '2025-01-15T14:35:00.000Z',
     type: 'text',
     read: true
   },
@@ -274,7 +276,7 @@ const mockMessages: Message[] = [
     id: '3',
     senderId: '2',
     content: 'Definitely! When can we meet?',
-    timestamp: '2024-01-15T14:40:00.000Z',
+    timestamp: '2025-01-15T14:40:00.000Z',
     type: 'text',
     read: false
   }

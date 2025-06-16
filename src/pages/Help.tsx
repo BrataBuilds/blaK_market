@@ -221,7 +221,7 @@ const Help: React.FC = () => {
                   <Phone className="w-5 h-5 text-blue-400" />
                   <div>
                     <div className="text-white font-medium">Campus Help Desk</div>
-                    <div className="text-sm text-gray-400">Library, Ground Floor</div>
+                    <div className="text-sm text-gray-400">In some Hostel Room</div>
                   </div>
                 </div>
               </div>
@@ -289,20 +289,6 @@ const Help: React.FC = () => {
                   Submit Ticket
                 </button>
               </form>
-            </div>
-
-            {/* Emergency Contact */}
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <AlertTriangle className="w-5 h-5 text-red-400" />
-                <h4 className="font-semibold text-red-400">Emergency</h4>
-              </div>
-              <p className="text-sm text-red-300 mb-3">
-                For urgent security issues or emergencies, contact campus security immediately.
-              </p>
-              <div className="text-sm text-red-400 font-medium">
-                Campus Security: +91-674-2725-555
-              </div>
             </div>
           </div>
         </div>

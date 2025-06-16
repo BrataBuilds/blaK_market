@@ -49,12 +49,12 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-400 hover:text-white transition-colors">
+                <Link to="/help" className="text-gray-400 hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
+                <Link to="/help" className="text-gray-400 hover:text-white transition-colors">
                   Contact
                 </Link>
               </li>
@@ -66,22 +66,22 @@ const Footer: React.FC = () => {
             <h3 className="text-white font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
+                <Link to="/help" className="text-gray-400 hover:text-white transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">
+                <Link to="/help" className="text-gray-400 hover:text-white transition-colors">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/guidelines" className="text-gray-400 hover:text-white transition-colors">
+                <Link to="/help" className="text-gray-400 hover:text-white transition-colors">
                   Community Guidelines
                 </Link>
               </li>
               <li>
-                <Link to="/report" className="text-gray-400 hover:text-white transition-colors">
+                <Link to="/help" className="text-gray-400 hover:text-white transition-colors">
                   Report Issues
                 </Link>
               </li>
@@ -113,7 +113,7 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 BLA<span className="text-green-400">K</span>MARKET. All rights reserved.
+            © 2025 BLA<span className="text-green-400">K</span>MARKET. All rights reserved.
           </p>
           <p className="text-gray-400 text-sm mt-2 md:mt-0">
             Made with ❤️ for KIIT Students

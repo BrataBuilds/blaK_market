@@ -7,6 +7,8 @@ import RequestCard from '../components/RequestCard';
 import ProductModal from '../components/ProductModal';
 import CreateListingModal from '../components/CreateListingModal';
 import ChatModal from '../components/ChatModal';
+import RequestModal  from '../components/RequestModal';
+import ServiceModal from '../components/ServiceModal';
 import { Product, Service, Request, Chat } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -21,7 +23,7 @@ const Marketplace: React.FC = () => {
     setSelectedCategory 
   } = useMarketplace();
   const { user } = useAuth();
-  
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [activeTab, setActiveTab] = useState<'products' | 'services' | 'requests'>('products');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('newest');
@@ -30,6 +32,7 @@ const Marketplace: React.FC = () => {
   const [showCreateListing, setShowCreateListing] = useState(false);
   const [createListingType, setCreateListingType] = useState<'product' | 'service' | 'request'>('product');
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const categories = {
     products: ['all', 'electronics', 'books', 'apparel', 'consumables', 'rentals'],
@@ -103,43 +106,95 @@ const Marketplace: React.FC = () => {
     setShowCreateListing(true);
   };
 
-  const handleContactSeller = (item: Product | Service) => {
-    // Find existing chat or create new one
-    const sellerId = 'sellerId' in item ? item.sellerId : 'providerId' in item ? item.providerId : '';
-    const existingChat = chats.find(chat => 
-      chat.participants.some(p => p.id === sellerId) && 
-      chat.participants.some(p => p.id === user?.id)
-    );
+  // const handleContactSeller = (item: Product | Service | Request) => {
+  //   // Find existing chat or create new one
+  //   const sellerId = 'sellerId' in item ? item.sellerId : 'providerId' in item ? item.providerId : '';
+  //   const existingChat = chats.find(chat => 
+  //     chat.participants.some(p => p.id === sellerId) && 
+  //     chat.participants.some(p => p.id === user?.id)
+  //   );
 
-    if (existingChat) {
-      setSelectedChat(existingChat);
-    } else {
-      // Create new chat (in real app, this would be an API call)
-      const seller = 'seller' in item ? item.seller : 'provider' in item ? item.provider : null;
-      if (seller && user) {
-        const newChat: Chat = {
-          id: Date.now().toString(),
-          participants: [user, seller],
-          messages: [],
-          lastMessage: {
-            id: '1',
-            senderId: user.id,
-            content: `Hi! I'm interested in your ${item.title}`,
-            timestamp: new Date().toISOString(),
-            type: 'text',
-            read: false
-          },
-          unreadCount: 0,
-          itemId: item.id,
-          itemType: 'sellerId' in item ? 'product' : 'service',
-          archived: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        setSelectedChat(newChat);
-      }
-    }
-  };
+  //   if (existingChat) {
+  //     setSelectedChat(existingChat);
+  //   } else {
+  //     // Create new chat (in real app, this would be an API call)
+  //     const seller = 'seller' in item ? item.seller : 'provider' in item ? item.provider : null;
+  //     if (seller && user) {
+  //       const newChat: Chat = {
+  //         id: Date.now().toString(),
+  //         participants: [user, seller],
+  //         messages: [],
+  //         lastMessage: {
+  //           id: '1',
+  //           senderId: user.id,
+  //           content: `Hi! I'm interested in your ${item.title}`,
+  //           timestamp: new Date().toISOString(),
+  //           type: 'text',
+  //           read: false
+  //         },
+  //         unreadCount: 0,
+  //         itemId: item.id,
+  //         itemType: 'sellerId' in item ? 'product' : 'service',
+  //         archived: false,
+  //         createdAt: new Date().toISOString(),
+  //         updatedAt: new Date().toISOString()
+  //       };
+  //       setSelectedChat(newChat);
+  //     }
+  //   }
+  // };
+  const handleContactSeller = (item: Product | Service | Request) => {
+  // Determine the contact user and type
+  let contactId = '';
+  let contactUser = null;
+  let itemType = '';
+
+  if ('sellerId' in item) {
+    contactId = item.sellerId;
+    contactUser = item.seller;
+    itemType = 'product';
+  } else if ('providerId' in item) {
+    contactId = item.providerId;
+    contactUser = item.provider;
+    itemType = 'service';
+  } else if ('requesterId' in item) {
+    contactId = item.requesterId;
+    contactUser = item.requester;
+    itemType = 'request';
+  }
+
+  if (!contactId || !contactUser || !user) return;
+
+  const existingChat = chats.find(chat =>
+    chat.participants.some(p => p.id === contactId) &&
+    chat.participants.some(p => p.id === user.id)
+  );
+
+  if (existingChat) {
+    setSelectedChat(existingChat);
+  } else {
+    const newChat: Chat = {
+      id: Date.now().toString(),
+      participants: [user, contactUser],
+      messages: [],
+      lastMessage: {
+        id: '1',
+        senderId: user.id,
+        content: `Hi! I'm interested in your ${item.title}`,
+        timestamp: new Date().toISOString(),
+        type: 'text',
+        read: false
+      },
+      unreadCount: 0,
+      itemId: item.id,
+      itemType,
+      archived: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    setSelectedChat(newChat);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-900 py-8">
@@ -305,7 +360,7 @@ const Marketplace: React.FC = () => {
                   <ServiceCard
                     key={item.id}
                     service={item}
-                    onClick={() => {/* Handle service click */}}
+                    onClick={() => setSelectedService(item)}
                   />
                 );
               case 'requests':
@@ -313,7 +368,7 @@ const Marketplace: React.FC = () => {
                   <RequestCard
                     key={item.id}
                     request={item}
-                    onClick={() => {/* Handle request click */}}
+                    onClick={() => setSelectedRequest(item)}
                   />
                 );
               default:
@@ -358,6 +413,29 @@ const Marketplace: React.FC = () => {
           onClose={() => setSelectedChat(null)}
         />
       )}
+
+      {selectedRequest && (
+      <RequestModal
+        request={selectedRequest}
+        isOpen={!!selectedRequest}
+        onClose={() => setSelectedRequest(null)}
+        onContactRequester={() => {
+          handleContactSeller(selectedRequest);
+          setSelectedRequest(null);
+
+        }}
+  />
+)}
+  {selectedService && (
+    <ServiceModal
+      service={selectedService}
+      isOpen={!!selectedService}
+      onClose={() => setSelectedService(null)}
+      onContactProvider={() => {handleContactSeller(selectedService);
+        setSelectedService(null);
+      }}
+    />
+  )}
     </div>
   );
 };

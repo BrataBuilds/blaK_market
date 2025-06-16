@@ -36,7 +36,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ user: profileUser, 
       revieweeId: profileUser.id,
       rating: 5,
       comment: 'Excellent seller! The laptop was exactly as described and the transaction was smooth.',
-      date: '2024-01-10T00:00:00.000Z',
+      date: '2025-06-01T00:00:00.000Z',
       transactionId: 'tx1',
       helpful: 3,
       reported: false
