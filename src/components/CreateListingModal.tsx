@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X, Upload, MapPin, Tag, DollarSign, Camera, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useMarketplace } from '../contexts/MarketplaceContext';
+import { Product, Service, Request } from '../types';
 
 interface CreateListingModalProps {
   isOpen: boolean;
@@ -10,6 +12,7 @@ interface CreateListingModalProps {
 
 const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose, type }) => {
   const { user } = useAuth();
+  const { addProduct, addService, addRequest } = useMarketplace();
   const [currentStep, setCurrentStep] = useState(1);
   const [images, setImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
@@ -35,6 +38,7 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
   });
   const [newTag, setNewTag] = useState('');
   const [newSpec, setNewSpec] = useState({ key: '', value: '' });
+  const [isDragging, setIsDragging] = useState(false);
 
   if (!isOpen) return null;
 
@@ -61,12 +65,76 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    
     if (images.length + files.length > 5) {
       alert('Maximum 5 images allowed');
       return;
     }
 
-    files.forEach(file => {
+    // Validate file types and sizes
+    const validFiles = files.filter(file => {
+      const isValidType = file.type.startsWith('image/');
+      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
+      
+      if (!isValidType) {
+        alert(`${file.name} is not a valid image file`);
+        return false;
+      }
+      if (!isValidSize) {
+        alert(`${file.name} is too large. Maximum size is 5MB`);
+        return false;
+      }
+      return true;
+    });
+
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setImages(prev => [...prev, e.target!.result as string]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Clear the input
+    e.target.value = '';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (images.length + imageFiles.length > 5) {
+      alert('Maximum 5 images allowed');
+      return;
+    }
+
+    // Process dropped files similar to file input
+    const validFiles = imageFiles.filter(file => {
+      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
+      
+      if (!isValidSize) {
+        alert(`${file.name} is too large. Maximum size is 5MB`);
+        return false;
+      }
+      return true;
+    });
+
+    validFiles.forEach(file => {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
@@ -79,6 +147,13 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    const newImages = [...images];
+    const [movedImage] = newImages.splice(fromIndex, 1);
+    newImages.splice(toIndex, 0, movedImage);
+    setImages(newImages);
   };
 
   const addTag = () => {
@@ -122,9 +197,135 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', { ...formData, images, type });
-    onClose();
+    
+    if (!user) return;
+
+    // Validation
+    if (type === 'product' && images.length === 0) {
+      alert('Please add at least one image for your product');
+      return;
+    }
+
+    if (!formData.title.trim()) {
+      alert('Please enter a title');
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      alert('Please enter a description');
+      return;
+    }
+
+    if (!formData.category) {
+      alert('Please select a category');
+      return;
+    }
+
+    if (!formData.location.trim()) {
+      alert('Please enter a location');
+      return;
+    }
+
+    if ((type === 'product' || type === 'service') && (!formData.price || parseFloat(formData.price) <= 0)) {
+      alert('Please enter a valid price');
+      return;
+    }
+
+    if (type === 'request' && (!formData.budget || parseFloat(formData.budget) <= 0)) {
+      alert('Please enter a valid budget');
+      return;
+    }
+
+    const baseData = {
+      id: Date.now().toString(),
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      subcategory: formData.subcategory,
+      location: formData.location,
+      datePosted: new Date().toISOString(),
+      views: 0,
+      saves: 0,
+      tags: formData.tags,
+    };
+
+    try {
+      if (type === 'product') {
+        const newProduct: Product = {
+          ...baseData,
+          price: parseFloat(formData.price),
+          currency: formData.currency as 'INR',
+          negotiable: formData.negotiable,
+          condition: formData.condition as any,
+          images: images,
+          sellerId: user.id,
+          seller: user,
+          availability: 'available' as const,
+          specifications: formData.specifications,
+          warranty: formData.warranty,
+          returnPolicy: formData.returnPolicy,
+        };
+        addProduct(newProduct);
+      } else if (type === 'service') {
+        const newService: Service = {
+          ...baseData,
+          price: parseFloat(formData.price),
+          currency: formData.currency as 'INR',
+          negotiable: formData.negotiable,
+          duration: formData.duration,
+          providerId: user.id,
+          provider: user,
+          availability: 'available' as const,
+          images: images,
+          requirements: formData.requirements,
+          deliverables: formData.deliverables,
+        };
+        addService(newService);
+      } else if (type === 'request') {
+        const newRequest: Request = {
+          ...baseData,
+          budget: parseFloat(formData.budget),
+          currency: formData.currency as 'INR',
+          urgency: formData.urgency as any,
+          requesterId: user.id,
+          requester: user,
+          status: 'open' as const,
+          deadline: formData.deadline,
+          responses: 0,
+          requirements: formData.requirements,
+        };
+        addRequest(newRequest);
+      }
+
+      // Reset form and close modal
+      setFormData({
+        title: '',
+        description: '',
+        price: '',
+        currency: 'INR',
+        negotiable: false,
+        category: '',
+        subcategory: '',
+        condition: 'good',
+        location: '',
+        tags: [] as string[],
+        specifications: {} as Record<string, string>,
+        warranty: '',
+        returnPolicy: '',
+        duration: '',
+        requirements: [] as string[],
+        deliverables: [] as string[],
+        urgency: 'medium',
+        deadline: '',
+        budget: ''
+      });
+      setImages([]);
+      setCurrentStep(1);
+      onClose();
+    } catch (error) {
+      console.error('Error creating listing:', error);
+      alert('Failed to create listing. Please try again.');
+    }
   };
 
   const selectedCategory = categories[type].find(cat => cat.value === formData.category);
@@ -387,25 +588,96 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
               {/* Image Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Images {type !== 'request' && '*'} (Max 5)
+                  Images ({images.length}/5)
+                  {type === 'product' && (
+                    <>
+                      <span className="text-red-400 ml-1">*</span>
+                      {images.length === 0 && (
+                        <span className="text-red-400 ml-1">At least 1 image required</span>
+                      )}
+                    </>
+                  )}
+                  {type === 'service' && (
+                    <span className="text-gray-400 ml-1">(Optional - showcase your work)</span>
+                  )}
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                   {images.map((image, index) => (
-                    <div key={index} className="relative aspect-square bg-gray-700 rounded-lg overflow-hidden">
+                    <div key={index} className="relative aspect-square bg-gray-700 rounded-lg overflow-hidden group">
                       <img src={image} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="flex space-x-1">
+                          {index > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => moveImage(index, index - 1)}
+                              className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                              title="Move left"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                              </svg>
+                            </button>
+                          )}
+                          {index < images.length - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => moveImage(index, index + 1)}
+                              className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                              title="Move right"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="p-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                            title="Remove image"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs text-white">
+                        {index === 0 ? 'Main' : index + 1}
+                      </div>
                     </div>
                   ))}
                   {images.length < 5 && (
-                    <label className="aspect-square bg-gray-700 rounded-lg border-2 border-dashed border-gray-600 hover:border-purple-500 transition-colors cursor-pointer flex flex-col items-center justify-center">
-                      <Camera className="w-8 h-8 text-gray-400 mb-2" />
-                      <span className="text-sm text-gray-400">Add Image</span>
+                    <label 
+                      className={`aspect-square bg-gray-700 rounded-lg border-2 border-dashed transition-colors cursor-pointer flex flex-col items-center justify-center group ${
+                        isDragging 
+                          ? 'border-purple-400 bg-purple-900/20' 
+                          : 'border-gray-600 hover:border-purple-500'
+                      }`}
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                    >
+                      <Upload className={`w-8 h-8 mb-2 transition-colors ${
+                        isDragging 
+                          ? 'text-purple-400' 
+                          : 'text-gray-400 group-hover:text-purple-400'
+                      }`} />
+                      <span className={`text-sm text-center transition-colors ${
+                        isDragging 
+                          ? 'text-purple-400' 
+                          : 'text-gray-400 group-hover:text-purple-400'
+                      }`}>
+                        {isDragging 
+                          ? 'Drop images here' 
+                          : images.length === 0 
+                            ? 'Add Images' 
+                            : 'Add More'
+                        }
+                        <br />
+                        <span className="text-xs">
+                          {isDragging ? 'Release to upload' : 'Drag & drop or click • Max 5MB each'}
+                        </span>
+                      </span>
                       <input
                         type="file"
                         accept="image/*"
@@ -416,6 +688,11 @@ const CreateListingModal: React.FC<CreateListingModalProps> = ({ isOpen, onClose
                     </label>
                   )}
                 </div>
+                {images.length > 0 && (
+                  <p className="text-xs text-gray-400">
+                    💡 Tip: The first image will be used as the main product image
+                  </p>
+                )}
               </div>
 
               {/* Specifications for Products */}

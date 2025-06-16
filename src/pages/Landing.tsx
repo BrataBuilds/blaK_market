@@ -16,7 +16,7 @@ const Landing: React.FC = () => {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">blaK Market</span>
+              Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">BLA<span className="text-green-400">K</span>MARKET</span>
             </h1>
             
             <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
@@ -45,7 +45,7 @@ const Landing: React.FC = () => {
       <div className="py-16 bg-gray-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Why Choose blaK Market?</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Why Choose BLA<span className="text-green-400">K</span>MARKET?</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
               Built exclusively for KIIT students, with features designed to make campus trading safe, simple, and rewarding.
             </p>

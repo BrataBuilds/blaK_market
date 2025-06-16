@@ -70,6 +70,7 @@ export interface Service {
   views: number;
   saves: number;
   tags: string[];
+  images?: string[];
   requirements?: string[];
   deliverables?: string[];
   revisions?: number;

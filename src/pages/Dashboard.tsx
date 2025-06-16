@@ -179,11 +179,17 @@ const Dashboard: React.FC = () => {
               {userListings.map((listing) => (
                 <div key={listing.id} className="bg-gray-800 rounded-lg p-6">
                   <div className="flex items-start space-x-4">
-                    <img
-                      src={listing.images[0]}
-                      alt={listing.title}
-                      className="w-20 h-20 rounded-lg object-cover"
-                    />
+                    {listing.images && listing.images.length > 0 ? (
+                      <img
+                        src={listing.images[0]}
+                        alt={listing.title}
+                        className="w-20 h-20 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-lg bg-gray-700 flex items-center justify-center">
+                        <Package className="w-8 h-8 text-gray-400" />
+                      </div>
+                    )}
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
                         <div>

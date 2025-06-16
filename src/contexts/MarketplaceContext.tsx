@@ -15,6 +15,9 @@ interface MarketplaceContextType {
   addToWishlist: (itemId: string, itemType: 'product' | 'service') => void;
   removeFromWishlist: (itemId: string) => void;
   isInWishlist: (itemId: string) => boolean;
+  addProduct: (product: Product) => void;
+  addService: (service: Service) => void;
+  addRequest: (request: Request) => void;
 }
 
 const MarketplaceContext = createContext<MarketplaceContextType | undefined>(undefined);
@@ -28,9 +31,9 @@ export const useMarketplace = () => {
 };
 
 export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products] = useState<Product[]>(mockProducts);
-  const [services] = useState<Service[]>(mockServices);
-  const [requests] = useState<Request[]>(mockRequests);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [services, setServices] = useState<Service[]>(mockServices);
+  const [requests, setRequests] = useState<Request[]>(mockRequests);
   const [chats] = useState<Chat[]>(mockChats);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,6 +70,18 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return wishlist.some(item => item.itemId === itemId);
   };
 
+  const addProduct = (product: Product) => {
+    setProducts(prev => [product, ...prev]);
+  };
+
+  const addService = (service: Service) => {
+    setServices(prev => [service, ...prev]);
+  };
+
+  const addRequest = (request: Request) => {
+    setRequests(prev => [request, ...prev]);
+  };
+
   return (
     <MarketplaceContext.Provider value={{
       products,
@@ -80,7 +95,10 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setSelectedCategory,
       addToWishlist,
       removeFromWishlist,
-      isInWishlist
+      isInWishlist,
+      addProduct,
+      addService,
+      addRequest
     }}>
       {children}
     </MarketplaceContext.Provider>
