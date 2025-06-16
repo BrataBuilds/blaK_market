@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart3, TrendingUp, DollarSign, Package, MessageCircle, Star, Eye, Heart, Plus, Edit, Trash2 } from 'lucide-react';
+import { BarChart3, TrendingUp, DollarSign, Package, MessageCircle,Gift,Star,CheckCircle,Eye, Heart, Plus, Edit, Trash2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarketplace } from '../contexts/MarketplaceContext';
 
@@ -7,7 +7,11 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { products, services } = useMarketplace();
   const [activeTab, setActiveTab] = useState<'overview' | 'listings' | 'sales' | 'analytics'>('overview');
-
+  const handleRedeem = (rewardId: number) => {
+    window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ","_blank");
+    // setRedeemed(rewardId);
+    // In a real app, call API to redeem and update points
+  };
   // Mock user's listings
   const userListings = [...products, ...services].filter(item => 
     'sellerId' in item ? item.sellerId === user?.id : 'providerId' in item ? item.providerId === user?.id : false
@@ -21,6 +25,39 @@ const Dashboard: React.FC = () => {
     activeChats: 8, // Mock data
     completedSales: 12 // Mock data
   };
+  
+  const rewards = [
+  {
+    id: 1,
+    name: 'Steam Gift Card ₹500',
+    points: 500,
+    image: 'https://store.cloudflare.steamstatic.com/public/shared/images/header/logo_steam.svg?t=962016', // Example image
+    description: 'Redeem for a ₹500 Steam Gift Card code.',
+  },
+  {
+    id: 2,
+    name: 'Amazon Gift Card ₹250',
+    points: 250,
+    image: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+    description: 'Redeem for a ₹250 Amazon Gift Card code.',
+  },
+  {
+    id: 3,
+    name: 'Spotify Premium 1 Month',
+    points: 150,
+    image: 'https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png',
+    description: 'Get 1 month of Spotify Premium.',
+  },
+];
+const RedeemPoints: React.FC = () => {
+  const { user } = useAuth();
+  // Mock points, replace with user.points if available
+  const points = user?.points ?? 420;
+
+  const [redeemed, setRedeemed] = useState<number | null>(null);
+
+  
+}
 
   return (
     <div className="min-h-screen bg-gray-900 py-8">
@@ -151,7 +188,77 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-
+            {/*  */}
+            {/* Redeem Points Section */}
+<div className="bg-gray-800 rounded-lg p-6">
+  <div className="flex items-center justify-between mb-4">
+    <div className="flex items-center space-x-3">
+      <Gift className="w-7 h-7 text-yellow-400" />
+      <h3 className="text-lg font-semibold text-white">Redeem BlaK Points</h3>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Star className="w-6 h-6 text-yellow-400" />
+      <span className="text-2xl font-bold text-yellow-400">{user?.points ?? 420}</span>
+    </div>
+  </div>
+  <div>
+    <h4 className="text-md font-semibold text-white mb-2">Available Rewards</h4>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {[
+        {
+          id: 1,
+          name: 'Steam Gift Card ₹500',
+          points: 500,
+          image: 'https://store.cloudflare.steamstatic.com/public/shared/images/header/logo_steam.svg?t=962016',
+          description: 'Redeem for a ₹500 Steam Gift Card code.',
+        },
+        {
+          id: 2,
+          name: 'Amazon Gift Card ₹250',
+          points: 250,
+          image: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+          description: 'Redeem for a ₹250 Amazon Gift Card code.',
+        },
+        {
+          id: 3,
+          name: 'Spotify Premium 1 Month',
+          points: 150,
+          image: 'https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png',
+          description: 'Get 1 month of Spotify Premium.',
+        },
+      ].map((reward) => (
+        <div key={reward.id} className="bg-gray-700 rounded-lg p-4 flex items-center space-x-4">
+          <img src={reward.image} alt={reward.name} className="w-12 h-12 object-contain rounded" />
+          <div className="flex-1">
+            <h5 className="text-white font-semibold">{reward.name}</h5>
+            <p className="text-gray-400 text-sm mb-1">{reward.description}</p>
+            <div className="flex items-center space-x-2">
+              <Star className="w-4 h-4 text-yellow-400" />
+              <span className="text-yellow-400 font-semibold">{reward.points} points</span>
+            </div>
+          </div>
+          <div>
+            {(user?.points ?? 420) >= reward.points ? (
+              <button
+                className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition-colors"
+                onClick={() => handleRedeem(reward.id)} // Implement redeem logic if needed
+              >
+                Redeem
+              </button>
+            ) : (
+              <button
+                disabled
+                className="px-4 py-2 rounded-lg bg-gray-600 text-gray-400 font-semibold cursor-not-allowed"
+              >
+                Not enough points
+              </button>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
             {/* Performance Chart */}
             <div className="bg-gray-800 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-white mb-4">Performance Overview</h3>
