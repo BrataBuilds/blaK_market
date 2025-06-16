@@ -175,11 +175,6 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Student ID</label>
-                <p className="text-gray-400">{user.studentId}</p>
-              </div>
-
-              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Department</label>
                 <p className="text-gray-400">{user.department}</p>
               </div>
